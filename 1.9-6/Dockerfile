@@ -1,11 +1,13 @@
-FROM ruby:2.1
+FROM ruby:1.9.3
 
 # BASE BEGIN
 RUN set -ex \
   && apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl wget git-core htop \
-    screen apt-transport-https cron supervisor locales openssh-server vim libmysqlclient-dev \
-    bzip2 libfontconfig mysql-client rsync net-tools less freetds-dev \
+  && apt-get upgrade -y
+  && apt-get install -y --no-install-recommends ca-certificates apt-transport-https \
+   curl wget net-tools dnsutils mtr rsync git-core htop iftop screen vim \
+   cron supervisor locales openssh-server bzip2 libfontconfig monit less \
+   default-mysql-client redis-tools netcat logrotate \
   && rm -rf /var/lib/apt/lists/*
 
 RUN set -ex \
@@ -48,7 +50,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC64107
 
 # NGINX_SERVER END
 
-# NODE6_LTS BEGIN
+# NODE8_LTS BEGIN
 RUN set -ex \
   && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
   && apt-get update \
@@ -56,7 +58,7 @@ RUN set -ex \
   && rm -rf /var/lib/apt/lists/*
 
 
-# NODE6_LTS END
+# NODE8_LTS END
 
 # YARN BEGIN
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \

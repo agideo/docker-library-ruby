@@ -1,44 +1,39 @@
-FROM ruby:2.2
+FROM ruby:2.1
 
-RUN apt-get update
-
-# DEBIAN_DPKGS BEGIN
+# BASE BEGIN
 RUN set -ex \
-  && apt-get install -y --no-install-recommends ca-certificates curl wget git-core htop screen apt-transport-https vim libmysqlclient-dev mysql-client bzip2 libfontconfig rsync
+  && apt-get update \
+  && apt-get upgrade -y
+  && apt-get install -y --no-install-recommends ca-certificates apt-transport-https \
+   curl wget net-tools dnsutils mtr rsync git-core htop iftop screen vim \
+   cron supervisor locales openssh-server bzip2 libfontconfig monit less \
+   default-mysql-client redis-tools netcat logrotate \
+  && rm -rf /var/lib/apt/lists/*
 
-# DEBIAN_DPKGS END
-
-# SUPERVISOR BEGIN
 RUN set -ex \
-  && apt-get install -y --no-install-recommends supervisor \
+  && { \
+      echo '[program:cron]'; \
+      echo 'command=/usr/sbin/cron -f'; \
+  } >> /etc/supervisor/conf.d/cron.conf \
+  \
   && mkdir -p /var/log/supervisor \
   && { \
     echo '[supervisord]'; \
     echo 'nodaemon=true'; \
-  } >> /etc/supervisor/conf.d/supervisord.conf
-
-# SUPERVISOR END
-
-# SSH_SERVER BEGIN
-RUN set -ex \
-  && apt-get install -y --no-install-recommends openssh-server \
+  } >> /etc/supervisor/conf.d/supervisord.conf \
+  \
+  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+  && locale-gen \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:en: \
+  \
   && mkdir -p /var/run/sshd \
   && { \
     echo '[program:sshd]'; \
     echo 'command=/usr/sbin/sshd -D'; \
   } >> /etc/supervisor/conf.d/sshd.conf
 
-# SSH_SERVER END
-
-# CRON_SERVER BEGIN
-RUN set -ex \
-  && apt-get install -y --no-install-recommends cron \
-  && { \
-    echo '[program:cron]'; \
-    echo 'command=/usr/sbin/cron -f'; \
-  } >> /etc/supervisor/conf.d/cron.conf
-
-# CRON_SERVER END
+ENV LC_ALL en_US.UTF-8
+# BASE END
 
 # NGINX_SERVER BEGIN
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
@@ -50,35 +45,29 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC64107
   && { \
     echo '[program:nginx]'; \
     echo 'command=nginx -g "daemon off;"'; \
-  } >> /etc/supervisor/conf.d/nginx.conf
+  } >> /etc/supervisor/conf.d/nginx.conf \
+  && rm -rf /var/lib/apt/lists/*
 
 # NGINX_SERVER END
 
-# NODE6_LTS BEGIN
+# NODE8_LTS BEGIN
 RUN set -ex \
-  && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-  && apt-get install -y --no-install-recommends nodejs
+  && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends nodejs \
+  && rm -rf /var/lib/apt/lists/*
 
-# NODE6_LTS END
+
+# NODE8_LTS END
 
 # YARN BEGIN
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update \
-  && apt-get install --no-install-recommends yarn
+  && apt-get install --no-install-recommends yarn \
+  && rm -rf /var/lib/apt/lists/*
 
 # YARN END
-
-# LOCALE BEGIN
-RUN set -ex \
-  && apt-get install -y --no-install-recommends locales \
-  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-  && locale-gen \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:en:
-
-ENV LC_ALL en_US.UTF-8
-
-# LOCALE END
 
 # TIMEZONE BEGIN
 RUN set -ex \
@@ -107,13 +96,6 @@ RUN set -ex \
 
 # SSH_AGENT END
 
-# DEBIAN_CLEAN BEGIN
-RUN set -ex \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-# DEBIAN_CLEAN END
-
 # DOTBASHRC BEGIN
 RUN set -ex \
   && { \
@@ -124,12 +106,9 @@ RUN set -ex \
 
 # DOTBASHRC END
 
-ENV EDITOR vim
-
 RUN mkdir /app
 WORKDIR /app
 VOLUME /app
 
 EXPOSE 22 80 3000
-
 CMD ["sh", "-c", "env >> /etc/environment ; /usr/bin/supervisord"]

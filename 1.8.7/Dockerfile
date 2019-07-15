@@ -1,11 +1,12 @@
-FROM ruby:2.5
+FROM agideo/ree-1.8.7-2012.02
 
-# BASE BEGIN
 RUN set -ex \
   && apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl \
-    wget git-core htop screen net-tools apt-transport-https cron supervisor \
-    locales openssh-server vim bzip2 libfontconfig rsync \
+  && apt-get upgrade -y \
+  && apt-get install -y --no-install-recommends ca-certificates apt-transport-https \
+    curl wget net-tools dnsutils rsync git-core htop iftop screen vim  \
+    cron supervisor locales openssh-server bzip2 libfontconfig \
+    libmysqlclient-dev netcat logrotate \
   && rm -rf /var/lib/apt/lists/*
 
 RUN set -ex \
@@ -31,7 +32,6 @@ RUN set -ex \
   } >> /etc/supervisor/conf.d/sshd.conf
 
 ENV LC_ALL en_US.UTF-8
-# BASE END
 
 # NGINX_SERVER BEGIN
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
@@ -47,25 +47,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC64107
   && rm -rf /var/lib/apt/lists/*
 
 # NGINX_SERVER END
-
-# NODE8_LTS BEGIN
-RUN set -ex \
-  && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends nodejs \
-  && rm -rf /var/lib/apt/lists/*
-
-
-# NODE8_LTS END
-
-# YARN BEGIN
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-  && apt-get update \
-  && apt-get install --no-install-recommends yarn \
-  && rm -rf /var/lib/apt/lists/*
-
-# YARN END
 
 # TIMEZONE BEGIN
 RUN set -ex \
@@ -102,22 +83,6 @@ RUN set -ex \
     echo "unset HISTFILE"; \
   } >> /root/.bashrc
 
-# DOTBASHRC END
-
-
-# FreeTDS BEGIN
-# Microsoft SQL Server 2000	7.1
-# Microsoft SQL Server 2005	7.2
-# Microsoft SQL Server 2008	7.3
-
-RUN set -ex \
-  && cd /tmp \
-  && wget ftp://ftp.freetds.org/pub/freetds/stable/freetds-1.00.94.tar.gz \
-  && tar xzvf freetds-1.00.94.tar.gz \
-  && cd freetds-1.00.94 \
-  && ./configure --prefix=/usr/local --with-tdsver=7.3 \
-  && make \
-  && make install
 # DOTBASHRC END
 
 RUN mkdir /app

@@ -3,7 +3,7 @@ FROM ruby:2.3
 # BASE BEGIN
 RUN set -ex \
   && apt-get update \
-  && apt-get upgrade -y
+  && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends ca-certificates apt-transport-https \
    curl wget net-tools dnsutils mtr rsync git-core htop iftop screen vim \
    cron supervisor locales openssh-server bzip2 libfontconfig monit less \

@@ -1,11 +1,13 @@
-FROM ruby:2.4
+FROM ruby:2.3
 
 # BASE BEGIN
 RUN set -ex \
   && apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl wget git-core htop \
-   screen net-tools apt-transport-https cron supervisor locales openssh-server vim bzip2 \
-   libfontconfig rsync monit net-tools less \
+  && apt-get upgrade -y
+  && apt-get install -y --no-install-recommends ca-certificates apt-transport-https \
+   curl wget net-tools dnsutils mtr rsync git-core htop iftop screen vim \
+   cron supervisor locales openssh-server bzip2 libfontconfig monit less \
+   default-mysql-client redis-tools netcat logrotate \
   && rm -rf /var/lib/apt/lists/*
 
 RUN set -ex \
