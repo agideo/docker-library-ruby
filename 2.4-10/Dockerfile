@@ -90,7 +90,7 @@ RUN set -ex \
 
 RUN set -ex \
   && cd /root/.bash.d \
-  && curl -SLO https://raw.githubusercontent.com/agideo/docker-baseimage/master/files/bash.d/10_ssh-agent.bash \
+  && curl -SLO https://raw.githubusercontent.com/agideo/docker-library-ruby/master/files/bash.d/10_ssh-agent.bash \
   && cd -
 
 # SSH_AGENT END
