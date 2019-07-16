@@ -8,7 +8,7 @@ RUN set -ex \
     cron supervisor locales bzip2 libfontconfig \
     libmysqlclient-dev netcat logrotate \
   && apt-get remove -y openssh-client \
-  && apt-get install  openssh-server \
+  && apt-get install -y openssh-server \
   && rm -rf /var/lib/apt/lists/*
 
 RUN set -ex \
