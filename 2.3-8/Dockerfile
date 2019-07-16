@@ -106,7 +106,6 @@ RUN set -ex \
 
 # DOTBASHRC END
 
-RUN mkdir /app
 WORKDIR /app
 VOLUME /app
 
