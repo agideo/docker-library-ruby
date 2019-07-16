@@ -5,8 +5,10 @@ RUN set -ex \
   && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends ca-certificates apt-transport-https \
     curl wget net-tools dnsutils rsync git-core htop iftop screen vim  \
-    cron supervisor locales openssh-server bzip2 libfontconfig \
+    cron supervisor locales bzip2 libfontconfig \
     libmysqlclient-dev netcat logrotate \
+  && apt-get remove -y openssh-client \
+  && apt-get install  openssh-server \
   && rm -rf /var/lib/apt/lists/*
 
 RUN set -ex \
