@@ -4,7 +4,7 @@ RUN set -ex \
   && apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends ca-certificates apt-transport-https \
-    curl wget net-tools dnsutils rsync git-core htop iftop screen vim  \
+    curl wget net-tools dnsutils telnet rsync git-core htop iftop screen vim  \
     cron supervisor locales bzip2 libfontconfig \
     libmysqlclient-dev netcat logrotate \
   && apt-get remove -y openssh-client \
