@@ -1,4 +1,4 @@
-FROM ruby:2.3
+FROM ruby:2.3-stretch
 
 # BASE BEGIN
 RUN set -ex \
