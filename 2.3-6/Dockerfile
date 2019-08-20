@@ -114,7 +114,6 @@ RUN set -ex \
   && rm -rf teleport-v4.0.3-linux-amd64-bin.tar.gz /tmp/teleport
 
 WORKDIR /app
-VOLUME /app
 
 EXPOSE 22 80 3000
 CMD ["sh", "-c", "env >> /etc/environment ; /usr/bin/supervisord"]
