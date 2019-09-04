@@ -87,12 +87,13 @@ RUN set -ex \
 
 # DOTBASHRC END
 
+ENV TELEPORT_VERSION 4.0.5
 RUN set -ex \
-  && wget https://get.gravitational.com/teleport-v4.0.3-linux-amd64-bin.tar.gz \
+  && wget https://get.gravitational.com/teleport-v$TELEPORT_VERSION-linux-amd64-bin.tar.gz \
   && mkdir -p /tmp/teleport \
-  && tar -xzf teleport-v4.0.3-linux-amd64-bin.tar.gz -C /tmp/teleport --strip-components=1 \
+  && tar -xzf teleport-v$TELEPORT_VERSION-linux-amd64-bin.tar.gz -C /tmp/teleport --strip-components=1 \
   && mv /tmp/teleport/teleport /usr/local/bin/ \
-  && rm -rf teleport-v4.0.3-linux-amd64-bin.tar.gz /tmp/teleport
+  && rm -rf teleport-v$TELEPORT_VERSION-linux-amd64-bin.tar.gz /tmp/teleport
 
 WORKDIR /app
 
