@@ -1,14 +1,14 @@
 FROM ruby:2.3-stretch
 
-# BASE BEGIN
 RUN set -ex \
   && apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y --no-install-recommends ca-certificates apt-transport-https \
-   curl wget net-tools dnsutils mtr telnet rsync git-core htop iftop screen vim \
-   cron supervisor locales openssh-server bzip2 libfontconfig less \
-   default-mysql-client redis-tools netcat logrotate \
+    curl wget net-tools dnsutils mtr telnet rsync git-core htop iftop screen vim \
+    cron supervisor locales openssh-server bzip2 libfontconfig less \
+    default-mysql-client redis-tools netcat logrotate \
   && rm -rf /var/lib/apt/lists/*
+
 
 RUN set -ex \
   && { \
@@ -33,9 +33,8 @@ RUN set -ex \
   } >> /etc/supervisor/conf.d/sshd.conf
 
 ENV LC_ALL en_US.UTF-8
-# BASE END
 
-# NGINX_SERVER BEGIN
+
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
   && echo "deb http://nginx.org/packages/debian/ $(awk -F"[)(]+" '/VERSION=/ {print $2}' /etc/os-release) nginx" >> /etc/apt/sources.list \
   && apt-get update \
@@ -48,63 +47,40 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC64107
   } >> /etc/supervisor/conf.d/nginx.conf \
   && rm -rf /var/lib/apt/lists/*
 
-# NGINX_SERVER END
 
-# NODE8_LTS BEGIN
 RUN set -ex \
   && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
   && apt-get update \
   && apt-get install -y --no-install-recommends nodejs \
   && rm -rf /var/lib/apt/lists/*
 
-
-# NODE8_LTS END
-
-# YARN BEGIN
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update \
   && apt-get install --no-install-recommends yarn \
   && rm -rf /var/lib/apt/lists/*
 
-# YARN END
-
-# TIMEZONE BEGIN
 RUN set -ex \
   && echo "Asia/Shanghai" > /etc/timezone \
-  && dpkg-reconfigure -f noninteractive tzdata
-
-# TIMEZONE END
-
-# SSH_AGENT BEGIN
-RUN set -ex \
-  && mkdir -p /root/.ssh /root/.bash.d \
+  && dpkg-reconfigure -f noninteractive tzdata \
+  && mkdir -p /root/.ssh \
   && { \
     echo 'Host *'; \
     echo 'ServerAliveInterval=15'; \
     echo 'ServerAliveCountMax=6'; \
     echo 'ForwardAgent yes'; \
   } >> /root/.ssh/config \
+  && mkdir -p /root/.bash.d \
+  && touch /root/.app.bash \
+  && curl -SL https://raw.githubusercontent.com/agideo/docker-library-ruby/master/files/bash.d/10_ssh-agent.bash -o /root/.bash.d/10_ssh_agent.bash \
   && { \
     echo 'source ~/.bash.d/10_ssh-agent.bash'; \
-  } >> /root/.bashrc
-
-RUN set -ex \
-  && cd /root/.bash.d \
-  && curl -SLO https://raw.githubusercontent.com/agideo/docker-library-ruby/master/files/bash.d/10_ssh-agent.bash \
-  && cd -
-
-# SSH_AGENT END
-
-# DOTBASHRC BEGIN
-RUN set -ex \
-  && { \
+    echo 'source ~/.app.bash'; \
     echo "export TERM=xterm"; \
     echo "export PATH=$(echo $PATH)"; \
     echo "unset HISTFILE"; \
   } >> /root/.bashrc
 
-# DOTBASHRC END
 
 ENV TELEPORT_VERSION 4.0.5
 RUN set -ex \
