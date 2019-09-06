@@ -72,7 +72,7 @@ RUN set -ex \
   } >> /root/.ssh/config \
   && mkdir -p /root/.bash.d \
   && touch /root/.app.bash \
-  && curl -SL https://raw.githubusercontent.com/agideo/docker-library-ruby/master/files/bash.d/10_ssh-agent.bash -o /root/.bash.d/10_ssh_agent.bash \
+  && curl -SL https://raw.githubusercontent.com/agideo/docker-library-ruby/master/files/bash.d/10_ssh-agent.bash -o /root/.bash.d/10_ssh-agent.bash \
   && { \
     echo 'source ~/.bash.d/10_ssh-agent.bash'; \
     echo 'source ~/.app.bash'; \
