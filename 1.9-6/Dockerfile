@@ -82,7 +82,7 @@ RUN set -ex \
   } >> /root/.bashrc
 
 
-ENV TELEPORT_VERSION 4.0.5
+ENV TELEPORT_VERSION 4.0.10
 RUN set -ex \
   && wget https://get.gravitational.com/teleport-v$TELEPORT_VERSION-linux-amd64-bin.tar.gz \
   && mkdir -p /tmp/teleport \
