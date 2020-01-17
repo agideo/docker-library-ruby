@@ -61,7 +61,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && rm -rf /var/lib/apt/lists/*
 
 RUN set -ex \
-  && echo "Asia/Shanghai" > /etc/timezone \
+  && ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
   && dpkg-reconfigure -f noninteractive tzdata \
   && mkdir -p /root/.ssh \
   && { \
