@@ -7,7 +7,6 @@ RUN set -ex \
     curl wget net-tools dnsutils mtr telnet rsync git-core htop iftop screen vim \
     cron supervisor locales openssh-server bzip2 libfontconfig less \
     default-mysql-client imagemagick redis-tools netcat logrotate \
-  && gem update \
   && rm -rf /var/lib/apt/lists/*
 
 
