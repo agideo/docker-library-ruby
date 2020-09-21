@@ -88,6 +88,7 @@ RUN set -ex \
   && mkdir -p /tmp/teleport \
   && tar -xzf teleport-v$TELEPORT_VERSION-linux-amd64-bin.tar.gz -C /tmp/teleport --strip-components=1 \
   && mv /tmp/teleport/teleport /usr/local/bin/ \
+  && mv /tmp/teleport/tsh /usr/local/bin/ \
   && rm -rf teleport-v$TELEPORT_VERSION-linux-amd64-bin.tar.gz /tmp/teleport
 
 WORKDIR /app
