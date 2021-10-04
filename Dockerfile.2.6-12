@@ -90,6 +90,10 @@ RUN set -ex \
   && mv /tmp/teleport/teleport /usr/local/bin/ \
   && mv /tmp/teleport/tsh /usr/local/bin/ \
   && rm -rf teleport-v$TELEPORT_VERSION-linux-amd64-bin.tar.gz /tmp/teleport
+  
+RUN set -ex \
+  && sed -i '/^mozilla\/DST_Root_CA_X3/s/^/!/' /etc/ca-certificates.conf \
+  && update-ca-certificates -f
 
 WORKDIR /app
 
