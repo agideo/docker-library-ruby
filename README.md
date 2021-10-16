@@ -2,3 +2,4 @@ Agideo
 ======
 
 ruby public images
+.
