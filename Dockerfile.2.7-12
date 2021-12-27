@@ -1,4 +1,4 @@
-FROM ruby:2.7
+FROM ruby:2.7-buster
 
 RUN set -ex \
   && apt-get update \
@@ -46,7 +46,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 573BFD6B3D8FBC64107
     echo 'command=nginx -g "daemon off;"'; \
   } >> /etc/supervisor/conf.d/nginx.conf \
   && rm -rf /var/lib/apt/lists/*
-
 
 RUN set -ex \
   && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
